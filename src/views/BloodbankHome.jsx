@@ -116,9 +116,11 @@ export default function BloodbankHome(props) {
   async function fetchChainData() {
     try {
       // to save all available blood Donor at current Blood Bank
+      console.log("check2")
       const bloodDataArray = [];
       // getting no og blood
       curBloodCount = parseInt(await contract.methods.getBloodCount().call({ from: account[0] }));
+      console.log("check3",curBloodCount)
       // initialising all blood count to zero
       var bloodGroupCount = {
         "A +ve": 0,
@@ -130,25 +132,29 @@ export default function BloodbankHome(props) {
         "AB +ve": 0,
         "AB -ve": 0,
       };
-      for (let blood = 1; blood <= curBloodCount; blood++) {
+      console.log("check4")
+      for (let blood = 0; blood <= curBloodCount; blood++) {
+        console.log("check5")
         // getting no of status updates
         const statusCount = await contract.methods.getBloodStatusCount(blood).call({ from: account[0] });
-
+        console.log("check6",statusCount)
         // getting status of a specific blood at its latest status
         const bloodStatus = await contract.methods.getBloodStatus(
           blood,
           statusCount
         ).call({ from: account[0] });
-
+        console.log("check7",bloodStatus)
         var time = bloodStatus[0];
         var owner = bloodStatus[2];
         var verified = bloodStatus[3];
+
+        console.log("username",user.name,owner)
         // if current blood bank and owner of current blood sample if smae get its furthur details
         if (user.name.toLowerCase().trim() === owner.toLowerCase().trim()) {
           // getting blood details as its of current blood bank
-          console.log("check1")
+          console.log("check8")
           const bloodData = await contract.methods.getBloodData( blood).call({ from: account[0] });
-
+          console.log("check9",bloodData)
           var bloodID = bloodData[0];
           var aadhar = bloodData[1];
           var bloodGroup = bloodData[2];
@@ -170,6 +176,7 @@ export default function BloodbankHome(props) {
               .replaceAll("/", " / "),
             expiryDate: expiryDate.replaceAll("/", " / "),
           };
+          console.log("check10",tempDonor)
           bloodDataArray.push(tempDonor);
         }
       }

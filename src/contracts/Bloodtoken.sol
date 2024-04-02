@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.5.1;
+pragma solidity 0.8.18;
 
 
 
@@ -227,7 +227,7 @@ contract Bloodtoken{
         ) {
             return "1";
         } else if (
-            sha256(abi.encodePacked((UserStore[_user_add].password))) ==
+            sha256(abi.encodePacked((UserStore[_user_add].password)))  !=
             sha256(abi.encodePacked((_password)))
         ) {
             return "2";

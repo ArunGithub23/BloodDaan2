@@ -146,12 +146,31 @@ useEffect(() => {
     } else {
       try {
         //checking if email pass if right
-        // var loginStatus = await contract.methods.isloginValid(
-        //   account[0],
-        //   email,
-        //   pass
-        // ).call({ from: account[0] });
-        var loginStatus ='3';
+        var loginStatus = await contract.methods.isloginValid(
+          account[0],
+          email,
+          pass
+        ).call({ from: account[0] });
+                    // Call the getLoginDetails method using .call()
+contract.methods.getLoginDetails(account[0]).call((error, result) => {
+  if (!error) {
+      // Here, result will be an array containing the returned values
+      const name = result[0];
+      const typeID = result[1];
+      const addressUser = result[2];
+      const coords = result[3];
+
+      // Now, you can store or use these values as needed
+      console.log('Name:', name);
+      console.log('Type ID:', typeID);
+      console.log('Address:', addressUser);
+      console.log('Coordinates:', coords);
+  } else {
+      console.error('Error:', error);
+  }
+});
+
+        
         console.log("loginstatus",loginStatus)
         // email mismatch
         if (loginStatus === "1") {
@@ -166,6 +185,26 @@ useEffect(() => {
           // email and pass match
         } else if (loginStatus === "3") {
           setLoading(true);
+
+            // Call the getLoginDetails method using .call()
+contract.methods.getLoginDetails(account[0]).call((error, result) => {
+  if (!error) {
+      // Here, result will be an array containing the returned values
+      const name = result[0];
+      const typeID = result[1];
+      const addressUser = result[2];
+      const coords = result[3];
+
+      // Now, you can store or use these values as needed
+      console.log('Name:', name);
+      console.log('Type ID:', typeID);
+      console.log('Address:', addressUser);
+      console.log('Coordinates:', coords);
+  } else {
+      console.error('Error:', error);
+  }
+});
+
           var userData = await contract.methods.getLoginDetails(account[0]).call({ from: account[0] });
           console.log("userdata",userData)
           var curUser = {
