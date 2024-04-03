@@ -56,7 +56,7 @@ export default function Landing() {
             className="shapes circle"
             src={require("../assets/img/cercuri.png")}
           />
-          <div className="content-center">
+          <div className="content-center" style={{backgroundColor:"green"}}>
             <Row className="row-grid justify-content-between align-items-center text-left">
               <Col lg="6" md="6">
                 <h1 className="text-white">
@@ -79,7 +79,7 @@ export default function Landing() {
                 <Row>
                   <Col lg={12}>
                     <h1 style={{ textDecoration: "underline" }}>
-                      Blood Chain X
+                      BloodDaan
                     </h1>
                   </Col>
                   <Col lg={12}>

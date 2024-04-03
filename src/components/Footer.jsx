@@ -8,7 +8,7 @@ export default function Footer() {
       <Container>
         <Row>
           <Col md="3">
-            <h1 className="title">Blood Chain X</h1>
+            <h1 className="title">BloodDaan</h1>
           </Col>
           <Col md="3">
             <Nav>
@@ -37,17 +37,17 @@ export default function Footer() {
           <Col md="3">
             <Nav>
               <Nav.Item>
-                <Nav.Link href="https://creative-tim.com/contact-us?ref=blkdsr-footer">
+                <Nav.Link href="#">
                   Contact Us
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link href="https://creative-tim.com/about-us?ref=blkdsr-footer">
+                <Nav.Link href="#">
                   About Us
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link href="https://creative-tim.com/blog?ref=blkdsr-footer">
+                <Nav.Link href="#">
                   Blog
                 </Nav.Link>
               </Nav.Item>
@@ -64,7 +64,7 @@ export default function Footer() {
               <Button
                 className="btn-icon btn-neutral btn-round btn-simple"
                 color="default"
-                href="https://twitter.com/creativetim"
+                href="#"
                 id="tooltip622135962"
                 target="_blank"
               >
@@ -73,7 +73,7 @@ export default function Footer() {
               <Button
                 className="btn-icon btn-neutral btn-round btn-simple"
                 color="default"
-                href="https://www.facebook.com/creativetim"
+                href="#"
                 id="tooltip230450801"
                 target="_blank"
               >
@@ -82,7 +82,7 @@ export default function Footer() {
               <Button
                 className="btn-icon btn-neutral btn-round btn-simple"
                 color="default"
-                href="https://dribbble.com/creativetim"
+                href="#"
                 id="tooltip318450378"
                 target="_blank"
               >
