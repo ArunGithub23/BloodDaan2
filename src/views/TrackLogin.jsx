@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState ,useCallback} from "react";
 import CustomNavbar from "../components/CustomNavbar";
 import {
   Alert,
@@ -18,6 +18,7 @@ import {
   useContract,
   useContractRead,
 } from "@thirdweb-dev/react";
+import Web3 from 'web3'
 
 export default function TrackLogin() {
   const [squares1to6, setSquares1to6] = useState("");
@@ -30,18 +31,74 @@ export default function TrackLogin() {
   const [alertMessage, setAlert] = useState("");
   const [showAlert, setShow] = useState(false);
 
+  const [account,setAccount]=useState('');
+  const [contract,setcontract]=useState('')
+  const [artifact,setartifact]=useState('');
+
   const navigate = useNavigate();
 
-  const account = useAddress();
+  const init = useCallback(
+    async artifact => {
+      if (artifact) {
+        console.log("okk")
+        const web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
+        console.log("web3",web3);
+        console.log("okk7")
+        const accounts1 = await web3.eth.requestAccounts();
+        console.log("okk6")
+        setAccount(accounts1)
+        console.log("okk4")
+        const networkID = await web3.eth.net.getId();
+        console.log("okk5")
+        const { abi } = artifact;
+        console.log("okk3")
+        let address, contract1;
+        try {
+          console.log("hello")
+          address = artifact.networks[networkID].address;
+          contract1 = new web3.eth.Contract(abi, address);
+          console.log("contractttt",contract1)
+          setcontract(contract1);
+        } catch (err) {
+          console.error(err);
+        }
+       
+      }
+    }, []);
 
-  const { contract } = useContract(
-    "0x44C824F009d9D892607b83aB7A87C22FF6122343"
-  );
+  useEffect(() => {
+    const tryInit = async () => {
+      try {
+        const artifact1 = require("../build/contracts/Bloodtoken.json");
+        console.log("arti",artifact1)
+        setartifact(artifact1)
+        init(artifact1);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    tryInit();
+  }, [init]);
+
+  useEffect(() => {
+    const events = ["chainChanged", "accountsChanged"];
+    const handleChange = () => {
+      init(artifact);
+    };
+
+    events.forEach(e => window.ethereum.on(e, handleChange));
+    return () => {
+      events.forEach(e => window.ethereum.removeListener(e, handleChange));
+    };
+  }, [init, artifact]);
+
+  //web3 ends
 
   async function formSubmit() {
     var aadharData = FetchFromAadhar(aadhar);
     console.log(aadharData);
-    var bloodIdToUnique = parseInt(await contract.call("idToBloodId", bloodID));
+    var bloodIdToUnique = parseInt(await contract.methods.idToBloodId(bloodID).call({ from: account[0] }));
     if (aadhar === "" || bloodID === "") {
       setAlert("Complete the form");
       setShow(true);
@@ -60,20 +117,20 @@ export default function TrackLogin() {
         setAlert("Blood ID Not Found");
         setTimeout(() => setShow(false), 3000);
       } else {
-        var BloodDataFromBloodID = await contract.call(
-          "getBloodData",
+        var BloodDataFromBloodID = await contract.methods.getBloodData(
+          
           bloodIdToUnique
-        );
+        ).call({ from: account[0] });
         if (BloodDataFromBloodID[1] !== aadhar) {
           setShow(true);
           setAlert("Blood ID does not match with blood donated on your aadhar");
           setTimeout(() => setShow(false), 3000);
         } else {
           console.log("successful login");
-          var bloodStatusCount = await contract.call(
-            "getBloodStatusCount",
+          var bloodStatusCount = await contract.methods.getBloodStatusCount(
+            
             bloodID
-          );
+          ).call({ from: account[0] });
           navigate("/track", {
             state: {
               name: aadharData.Name,

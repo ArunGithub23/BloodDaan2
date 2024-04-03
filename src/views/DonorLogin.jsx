@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState ,useCallback} from "react";
 import CustomNavbar from "../components/CustomNavbar";
 import {
   Alert,
@@ -12,6 +12,7 @@ import {
 import FetchFromAadhar from "../dummyAPI/fetchAadhar";
 import { useNavigate } from "react-router-dom";
 import { useAddress } from "@thirdweb-dev/react";
+import Web3 from "web3";
 
 export default function Login() {
   const [squares1to6, setSquares1to6] = useState("");
@@ -23,10 +24,72 @@ export default function Login() {
 
   const [alertMessage, setAlert] = useState("");
   const [showAlert, setShow] = useState(false);
+  const [account,setAccount]=useState('');
+  const [contract,setcontract]=useState('')
+  const [artifact,setartifact]=useState('');
 
   const navigate = useNavigate();
 
-  const account = useAddress();
+ 
+
+  const init = useCallback(
+    async artifact => {
+      if (artifact) {
+        console.log("okk")
+        const web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
+        console.log("web3",web3);
+        console.log("okk7")
+        const accounts1 = await web3.eth.requestAccounts();
+        console.log("okk6")
+        setAccount(accounts1)
+        console.log("okk4")
+        const networkID = await web3.eth.net.getId();
+        console.log("okk5")
+        const { abi } = artifact;
+        console.log("okk3")
+        let address, contract1;
+        try {
+          console.log("hello")
+          address = artifact.networks[networkID].address;
+          contract1 = new web3.eth.Contract(abi, address);
+          console.log("contractttt",contract1)
+          setcontract(contract1);
+        } catch (err) {
+          console.error(err);
+        }
+       
+      }
+    }, []);
+
+  useEffect(() => {
+    const tryInit = async () => {
+      try {
+        const artifact1 = require("../build/contracts/Bloodtoken.json");
+        console.log("arti",artifact1)
+        setartifact(artifact1)
+        init(artifact1);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    tryInit();
+  }, [init]);
+
+  useEffect(() => {
+    const events = ["chainChanged", "accountsChanged"];
+    const handleChange = () => {
+      init(artifact);
+    };
+
+    events.forEach(e => window.ethereum.on(e, handleChange));
+    return () => {
+      events.forEach(e => window.ethereum.removeListener(e, handleChange));
+    };
+  }, [init, artifact]);
+
+  //web3 ends
+
 
   function formSubmit() {
     var aadharData = FetchFromAadhar(aadhar);
@@ -39,20 +102,25 @@ export default function Login() {
       setShow(true);
       setTimeout(() => setShow(false), 3000);
     } else if (aadharData !== undefined) {
-      if (aadharData.address !== account) {
+      if (aadharData.address !== account[0]) {
+        console.log("account",aadharData.address)
+        setAadharCorrect(true);
         setAlert("Wallet address not match with one linked to aadhar");
         setTimeout(() => setShow(false), 3000);
       } else if (otp === "") {
+        console.log("check1")
         setAadharCorrect(true);
         setShow(true);
         setAlert("OTP Sent");
         setTimeout(() => setShow(false), 3000);
       } else if (otp !== "1111") {
+        console.log("check2")
         setAadharCorrect(true);
         setShow(true);
         setAlert("OTP Wrong");
         setTimeout(() => setShow(false), 3000);
       } else if (otp === "1111") {
+        console.log("check3")
         navigate("/redeem", {
           state: {
             aadharNo: aadhar,
