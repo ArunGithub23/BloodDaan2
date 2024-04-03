@@ -141,20 +141,20 @@ useEffect(() => {
     e.preventDefault();
     setLoading(true);
     if (bloodToBeSearched !== "select") {
-      var b_count = parseInt(await contract.call("getBloodCount"));
+      var b_count = parseInt(await contract.methods.getBloodCount().call({ from: account[0] }));
       var reqBlood = []; // multidimensioanl array with blood if distanct coords
 
       for (let i = 1; i <= b_count; ++i) {
-        const bloodData = await contract.call("getBloodData", i);
+        const bloodData = await contract.methods.getBloodData( i).call({ from: account[0] });
         const bloodStatusCount = parseInt(
-          await contract.call("getBloodStatusCount", i)
+          await contract.methods.getBloodStatusCount(i).call({ from: account[0] })
         );
 
-        const bloodStatus = await contract.call(
-          "getBloodStatus",
+        const bloodStatus = await contract.methods.getBloodStatus(
+        
           i,
           bloodStatusCount
-        );
+        ).call({ from: account[0] });
         var bloodGroup = bloodData[2];
         var owner = bloodStatus[2];
         var verified = parseInt(bloodStatus[3]);
@@ -198,20 +198,20 @@ useEffect(() => {
       var nearestBlood = reqBlood[0];
       // get detail of nearest blood
 
-      var nearestBloodData = await contract.call(
-        "getBloodData",
+      var nearestBloodData = await contract.methods.getBloodData(
+        
         nearestBlood[0]
-      );
+      ).call({ from: account[0] });
 
-      var nearestBloodStatusCount = await contract.call(
-        "getBloodStatusCount",
+      var nearestBloodStatusCount = await contract.methods.getBloodStatusCount(
+        
         nearestBlood[0]
-      );
-      var nearestBloodStatus = await contract.call(
-        "getBloodStatus",
+      ).call({ from: account[0] });
+      var nearestBloodStatus = await contract.methods.getBloodStatus(
+        
         nearestBlood[0],
         nearestBloodStatusCount
-      );
+      ).call({ from: account[0] });
 
       var foundBloodTemp = {
         id: nearestBlood[0],
