@@ -113,6 +113,7 @@ export default function UpdateStatus(props) {
           const qrCodeURL = (
             await QRCode.toDataURL(
              // sha256(donor.adharNo.replaceAll(" ", "").concat(donor.bloodId))
+             //hello
              sha256("78925b36da2a8ee5b5129a75816f06bd68c430f560e16aee47287e05be51f7ed")
             )
           ).replace("image/png", "image/octet-stream");
