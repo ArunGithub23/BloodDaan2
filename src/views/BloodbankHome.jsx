@@ -23,29 +23,29 @@ export default function BloodbankHome(props) {
 
   const { user } = useContext(globalContext);
 
-  // const generateSampleData = () => {
+  const generateSampleData = () => {
     
   
-  //   // Define the number of donors you want to generate
-  //   const numberOfDonors = 10;
-  // const data1=[];
-  //   // Generate data for each donor
-  //   for (let i = 0; i < numberOfDonors; i++) {
-  //     const donor = {
-  //       Name:"arun",
-  //       adharNo: `ADHAR-${Math.floor(Math.random() * 1000000)}`, // Random ADHAR number
-  //       collectionDate: new Date().toISOString(), // Current date as collection date
-  //       bloodId: `BLOOD-${i}`, // Unique blood ID
-  //       bloodGroup: ['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-'][Math.floor(Math.random() * 8)], // Random blood group
-  //       verified: Math.random() < 0.5, // Random boolean value for verification status
-  //     };
+    // Define the number of donors you want to generate
+    const numberOfDonors = 10;
+  const data1=[];
+    // Generate data for each donor
+    for (let i = 0; i < numberOfDonors; i++) {
+      const donor = {
+        Name:"arun",
+        adharNo: `ADHAR-${Math.floor(Math.random() * 1000000)}`, // Random ADHAR number
+        collectionDate: new Date().toISOString(), // Current date as collection date
+        bloodId: `BLOOD-${i}`, // Unique blood ID
+        bloodGroup: ['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-'][Math.floor(Math.random() * 8)], // Random blood group
+        verified: Math.random() < 0.5, // Random boolean value for verification status
+      };
   
-  //     data1.push(donor);
-  //   }
+      data1.push(donor);
+    }
   
-  //   setData(data1)
-  //   console.log("data is",data1)
-  // };
+    setData(data1)
+    console.log("data is",data1)
+  };
 
   
   
@@ -187,33 +187,57 @@ export default function BloodbankHome(props) {
     }
   }
 
+  // function updateStatus(e, d, idx) {
+  //   e.preventDefault();
+  //   navigate("/update-status", {
+  //     state: {
+  //       id: d.id,
+  //       bloodId: d.bloodId,
+  //       email: FetchFromAadhar(d.adharNo).Email,
+  //       name: FetchFromAadhar(d.adharNo).Name,
+  //       adharNo: d.adharNo,
+  //       bloodGroup: d.bloodGroup,
+  //       age: FetchFromAadhar(d.adharNo)["Age"] + " Years",
+  //       verified: d.verified,
+  //       collectionDate: d.collectionDate,
+  //       expiryDate: d.expiryDate,
+  //       owner: d.owner,
+  //       currentBloodBank: user.name,
+  //       cardId: idx,
+  //       entireData: d,
+  //       countdict: bloodCount,
+  //       walletAddress: FetchFromAadhar(d.adharNo).address,
+  //     },
+  //   });
+  // }
+
   function updateStatus(e, d, idx) {
     e.preventDefault();
     navigate("/update-status", {
       state: {
-        id: d.id,
-        bloodId: d.bloodId,
-        email: FetchFromAadhar(d.adharNo).Email,
-        name: FetchFromAadhar(d.adharNo).Name,
-        adharNo: d.adharNo,
-        bloodGroup: d.bloodGroup,
-        age: FetchFromAadhar(d.adharNo)["Age"] + " Years",
-        verified: d.verified,
-        collectionDate: d.collectionDate,
-        expiryDate: d.expiryDate,
-        owner: d.owner,
-        currentBloodBank: user.name,
-        cardId: idx,
-        entireData: d,
-        countdict: bloodCount,
-        walletAddress: FetchFromAadhar(d.adharNo).address,
+        id: 1,
+        bloodId: 1,
+        email: "abc123@gmail.com",
+        name: "Arun",
+        adharNo: "1234",
+        bloodGroup: "O +ve",
+        age: "20" + " Years",
+        verified: 1,
+        collectionDate:new Date().toISOString(),
+        expiryDate: new Date().toISOString(),
+        owner: "",
+        currentBloodBank: "sahil",
+        cardId: 2,
+        entireData: data,
+        countdict: 2,
+        walletAddress: "Nsp",
       },
     });
   }
 
   useEffect(() => {
 
-   // generateSampleData();
+   generateSampleData();
     document.body.classList.toggle("profile-page");
     fetchChainData();
     // Specify how to clean up after this effect:

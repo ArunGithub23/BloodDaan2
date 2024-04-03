@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import CustomNavbar from "../components/CustomNavbar";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState ,useCallback} from "react";
 
 import ProfileCard from "../components/ProfileCard";
 import globalContext from "../context/GlobalUserContext";
@@ -19,19 +19,16 @@ import globalContext from "../context/GlobalUserContext";
 import FetchFromAadhar from "../dummyAPI/fetchAadhar";
 import GetDistance from "../dummyAPI/GetDistance";
 
-//import { sha256 } from "js-sha256";
+import { sha256 } from "js-sha256";
 import QrReader from "react-qr-reader";
 import { useContract, useContractWrite } from "@thirdweb-dev/react";
 import { addDoc, collection } from "firebase/firestore";
 import db from "../firebase";
-
+import Web3 from "web3";
 export default function HospitalHome(props) {
-  const { contract } = useContract(process.env.REACT_APP_CONTRACT_ADD);
+  
 
-  const { mutateAsync: transferAsset } = useContractWrite(
-    contract,
-    "transferAsset"
-  );
+  
   const { user } = useContext(globalContext);
   console.log("user",user)
 
@@ -39,13 +36,77 @@ export default function HospitalHome(props) {
 
   const [foundBloodData, setFoundBlood] = useState({});
   const [loading, setLoading] = useState(false);
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(true);
   const [bloodbankCord, updateBloodbankCord] = useState();
   const [showNotFound, setNotFound] = useState(false);
   const [email, setEmail] = useState("");
   const qrRef = useRef(null);
   const [code, setCode] = useState("");
   const [hash, setHash] = useState();
+  const [account,setAccount]=useState('');
+  const [contract,setcontract]=useState('')
+  const [artifact,setartifact]=useState('');
+
+ //web 3 starts
+ const init = useCallback(
+  async artifact => {
+    if (artifact) {
+      console.log("okk")
+      const web3 = new Web3(Web3.givenProvider || "ws://localhost:7545");
+      console.log("web3",web3);
+      console.log("okk7")
+      const accounts1 = await web3.eth.requestAccounts();
+      console.log("okk6")
+      setAccount(accounts1)
+      console.log("okk4")
+      const networkID = await web3.eth.net.getId();
+      console.log("okk5")
+      const { abi } = artifact;
+      console.log("okk3")
+      let address, contract1;
+      try {
+        console.log("hello")
+        address = artifact.networks[networkID].address;
+        contract1 = new web3.eth.Contract(abi, address);
+        console.log("contractttt",contract1)
+        setcontract(contract1);
+      } catch (err) {
+        console.error(err);
+      }
+     
+    }
+  }, []);
+
+useEffect(() => {
+  const tryInit = async () => {
+    try {
+      const artifact1 = require("../build/contracts/Bloodtoken.json");
+      console.log("arti",artifact1)
+      setartifact(artifact1)
+      init(artifact1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  tryInit();
+}, [init]);
+
+useEffect(() => {
+  const events = ["chainChanged", "accountsChanged"];
+  const handleChange = () => {
+    init(artifact);
+  };
+
+  events.forEach(e => window.ethereum.on(e, handleChange));
+  return () => {
+    events.forEach(e => window.ethereum.removeListener(e, handleChange));
+  };
+}, [init, artifact]);
+
+//web3 ends
+
+
 
   function handleUpload() {
     if (qrRef && qrRef.current) qrRef.current.openImageDialog();
@@ -55,10 +116,11 @@ export default function HospitalHome(props) {
     if (data) {
       setCode(data);
     }
-    var h = foundBloodData.aadharNo
-      .replaceAll(" ", "")
-      .concat(foundBloodData.uniqueID);
-    //setHash(sha256(h));
+    // var h = foundBloodData.aadharNo
+    //   .replaceAll(" ", "")
+    //   .concat(foundBloodData.uniqueID);
+    var h="78925b36da2a8ee5b5129a75816f06bd68c430f560e16aee47287e05be51f7ed";
+    setHash(sha256(h));
   }
 
   function handleError(err) {
@@ -173,17 +235,17 @@ export default function HospitalHome(props) {
     }
   }
 
-  async function transferBlood() {
-    await transferAsset([
-      foundBloodData.id,
-      foundBloodData.currentBloodBank,
-      "1",
-      user.coords,
-      user.name,
-    ]).then(() => {
-      setModal(false);
-      alert("Blood Transfer Successfully");
-    });
+   async function transferBlood() {
+  //   await transferAsset([
+  //     foundBloodData.id,
+  //     foundBloodData.currentBloodBank,
+  //     "1",
+  //     user.coords,
+  //     user.name,
+  //   ]).then(() => {
+  //     setModal(false);
+  //     alert("Blood Transfer Successfully");
+  //   });
   }
 
   useEffect(() => {

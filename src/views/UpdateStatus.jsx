@@ -1,7 +1,7 @@
 import globalContext from "../context/GlobalUserContext";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-//import { sha256 } from "js-sha256";
+import { sha256 } from "js-sha256";
 import QRCode from "qrcode";
 import CustomNavbar from "../components/CustomNavbar";
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
@@ -19,6 +19,7 @@ export default function UpdateStatus(props) {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const donor={email:"abc123@gmail.com"}
 
   const waitlistRef = collection(db, "waitlist");
 
@@ -39,7 +40,7 @@ export default function UpdateStatus(props) {
 
   const { mutateAsync: transfer } = useContractWrite(contract, "transfer");
 
-  const donor = location.state;
+  //const donor = location.state;
 
   async function checkWaitlist() {
     const q = query(waitlistRef, where("bloodGroup", "==", donor.bloodGroup));
@@ -62,55 +63,57 @@ export default function UpdateStatus(props) {
   async function formSubmit(e, status) {
     e.preventDefault();
 
-    donor.verified = status;
+    //donor.verified = status;
+    donor.verified = 1
     if (true) {
       // alert(`${JSON.stringify(props.location.state)}`);
       // add to blockchain
 
       //defining email data for accepted = true
-      if (status) {
+      if (1) {
         // change verified to true and add changed data in blockchain
-        try {
-          setLoading(true);
-          //   donor.id,
-          //   donor.currentBloodBank,
-          //   1,
-          //   user.coords,
-          //   donor.currentBloodBank
-          // );
-          await transferAsset([
-            donor.id,
-            donor.currentBloodBank,
-            1,
-            user.coords,
-            donor.currentBloodBank,
-          ]);
+        // try {
+        //   setLoading(true);
+        //   //   donor.id,
+        //   //   donor.currentBloodBank,
+        //   //   1,
+        //   //   user.coords,
+        //   //   donor.currentBloodBank
+        //   // );
+        //   await transferAsset([
+        //     donor.id,
+        //     donor.currentBloodBank,
+        //     1,
+        //     user.coords,
+        //     donor.currentBloodBank,
+        //   ]);
 
-          // sending token to donor
-          const data = await transfer([donor.walletAddress, 10]);
-          // console.info("contract call successs", data);
-          // sending email
-          const safeEmaildata = {
-            donor_email: donor.email,
-            donor_name: donor.name,
-            email_subject: "Your Blood is Safe",
-            email_message:
-              "Thanks for your donation.Your blood is tested and safe and will be used for saving lives. As a token of appreciation we have provided you with 10 RBC tokens that you can utilise for help benefits",
-          };
-          sendEmail(safeEmaildata);
+        //   // sending token to donor
+        //   const data = await transfer([donor.walletAddress, 10]);
+        //   // console.info("contract call successs", data);
+        //   // sending email
+        //   const safeEmaildata = {
+        //     donor_email: donor.email,
+        //     donor_name: donor.name,
+        //     email_subject: "Your Blood is Safe",
+        //     email_message:
+        //       "Thanks for your donation.Your blood is tested and safe and will be used for saving lives. As a token of appreciation we have provided you with 10 RBC tokens that you can utilise for help benefits",
+        //   };
+        //   sendEmail(safeEmaildata);
 
-          // check is any user is waiting for this Blood Group
-          checkWaitlist();
-          // If added blood is required by anyone
-          // Check in firebase and notify all of them by email
-          // Funciton to do that {}
-        } catch (err) {
-          console.log("Error in Transfer function", err);
-        }
+        //   // check is any user is waiting for this Blood Group
+        //   checkWaitlist();
+        //   // If added blood is required by anyone
+        //   // Check in firebase and notify all of them by email
+        //   // Funciton to do that {}
+        // } catch (err) {
+        //   console.log("Error in Transfer function", err);
+        // }
         try {
           const qrCodeURL = (
             await QRCode.toDataURL(
              // sha256(donor.adharNo.replaceAll(" ", "").concat(donor.bloodId))
+             sha256("78925b36da2a8ee5b5129a75816f06bd68c430f560e16aee47287e05be51f7ed")
             )
           ).replace("image/png", "image/octet-stream");
           let aEl = document.createElement("a");

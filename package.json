@@ -15,6 +15,7 @@
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "firebase": "^9.22.2",
+    "js-sha256": "^0.11.0",
     "perfect-scrollbar": "^1.5.5",
     "qrcode": "^1.5.1",
     "react": "^18.2",
